@@ -5,7 +5,7 @@ WriteMakefile(
     'NAME'		=> 'Mac::AppleScript',
     'VERSION_FROM'	=> 'AppleScript.pm', # finds $VERSION
     'PREREQ_PM'		=> {}, # e.g., Module::Name => 1.1
-    'LIBS'		=> ['-lCarbonLib'], # e.g., '-lm'
+    'LIBS'		=> [''], # e.g., '-lm'
     'DEFINE'		=> '', # e.g., '-DHAVE_SOMETHING'
     'INC'		=> '', # e.g., '-I/usr/include/other'
 dynamic_lib        => {'OTHERLDFLAGS' => '-framework AppleScriptKit -framework Carbon'},

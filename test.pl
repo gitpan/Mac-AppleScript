@@ -6,13 +6,16 @@
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; print "1..2\n"; }
+BEGIN { $| = 1; print "1..3\n"; }
 END {print "not ok 1\n" unless $loaded;}
-use Mac::AppleScript;
+use Mac::AppleScript qw(RunAppleScript);
 $loaded = 1;
 print "ok 1\n";
 
-Mac::AppleScript::RunAppleScript(qq(tell application "Finder"\nactivate\nselect folder "Documents" of startup disk\n open selection\nend tell)) && print "ok 2\n";
+RunAppleScript(qq(tell application "Finder"\nactivate\nselect folder "Documents" of startup disk\n open selection\nend tell)) || print "not ";
+print "ok 2\n";
+RunAppleScript(qq(tell application Finder\nactivate\nend tell)) && print "not ";
+print "ok 3 # $@\n"
 ######################### End of black magic.
 
 # Insert your test code below (better if it prints "ok 13"

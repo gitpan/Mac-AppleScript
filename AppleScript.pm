@@ -26,7 +26,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw(
 	
 );
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 bootstrap Mac::AppleScript $VERSION;
 
@@ -51,7 +51,7 @@ Mac::AppleScript - Perl extension to execute applescript commands on OS X
 
 Simple interface to the OSA scripting stuff.
 
-This is beta only--the code is very chatty when things fail, and no meaningful error message is returned to the program yet.
+Returns undef on error and sets $@ to the error code. Codes are listed in the AppleScript documentation.
 
 =head2 EXPORT
 

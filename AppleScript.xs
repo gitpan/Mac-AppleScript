@@ -59,31 +59,19 @@ PPCODE:
 	  }
 	  */
 	if (err != noErr) {
-	  printf("Got an error %i trying to OSAExecute\n", err);
+	  sv_setiv(ERRSV, err);
 	}
       } else {
-	printf("Got an error %i trying to OSACompile\n", err);
+	sv_setiv(ERRSV, err);
       }
     } else {
-      printf("Got an error %i trying to AECreateDesc\n", err);
+      sv_setiv(ERRSV, err);
     }
     AEDisposeDesc(&scriptTextDesc);
-    if (err) {
-      if (scriptID != kOSANullScript) {
-	puts("The scriptID was valid");
-      }
-      if (resultID != kOSANullScript) {
-	puts("The resultID was valid");
-      }
-      if (theComponent != NULL) {
-	puts("theComponent was valid");
-      }
-    }
     if (scriptID != kOSANullScript) OSADispose(theComponent, scriptID);
     if (resultID != kOSANullScript) OSADispose(theComponent, resultID);
     if (theComponent != NULL) CloseComponent(theComponent);
     if (err) {
-      printf("Argh! Error %i\n", err);
       XSRETURN_EMPTY;
     }
     XSRETURN_YES;
