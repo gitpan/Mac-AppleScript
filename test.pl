@@ -12,8 +12,14 @@ use Mac::AppleScript qw(RunAppleScript);
 $loaded = 1;
 print "ok 1\n";
 
-RunAppleScript(qq(tell application "Finder"\nactivate\nselect folder "Documents" of startup disk\n open selection\nend tell)) || print "not ";
-print "ok 2\n";
+my $foo = RunAppleScript(<<AppleScript) || print "not ";
+tell app "Finder"
+	open startup disk
+	delay 1
+	close window 1
+end tell
+AppleScript
+print "ok 2 # $foo\n";
 RunAppleScript(qq(tell application Finder\nactivate\nend tell)) && print "not ";
 print "ok 3 # $@\n"
 ######################### End of black magic.

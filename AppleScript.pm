@@ -26,7 +26,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw(
 	
 );
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 bootstrap Mac::AppleScript $VERSION;
 
@@ -51,7 +51,12 @@ Mac::AppleScript - Perl extension to execute applescript commands on OS X
 
 Simple interface to the OSA scripting stuff.
 
-Returns undef on error and sets $@ to the error code. Codes are listed in the AppleScript documentation.
+Returns undef on error and sets $@ to the error code. Codes are listed
+in the AppleScript documentation. On successful completion, this
+returns the output of the AppleScript command. For empty returns, like
+with the sample script in the SYNOPSIS, AppleScript appears to return
+the string "{}" ( That's an open and close squiggle bracket, without
+the quotes)
 
 =head2 EXPORT
 

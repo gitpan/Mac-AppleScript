@@ -14,8 +14,10 @@ PPCODE:
 {
     ComponentInstance theComponent;
     AEDesc scriptTextDesc;
+    AEDesc resultData;
     OSStatus err = noErr;
     OSAID scriptID, resultID;
+    SV *returnSV;
     
     /* set up locals to a known state */
     theComponent = NULL;
@@ -60,6 +62,36 @@ PPCODE:
 	  */
 	if (err != noErr) {
 	  sv_setiv(ERRSV, err);
+	} else {
+	  int isError = 0;
+	  AECreateDesc(typeNull, NULL, 0, &resultData);
+	  if (err == errOSAScriptError) {
+            OSAScriptError(theComponent, kOSAErrorMessage,
+			   typeChar, &resultData);
+	    isError = 1;
+	  } else if (err == noErr && resultID != kOSANullScript) {
+            OSADisplay(theComponent, resultID, typeChar,
+		       kOSAModeNull, &resultData);
+	  }
+	  /* We got something in resultData. Now fish it out */
+	  {
+	    char *returnChar;
+	    Size returnSize;
+	    /* How big is the return? */
+	    returnSize = AEGetDescDataSize(&resultData);
+	    /* Alloc some memory for it */
+	    returnChar = malloc(returnSize); /* Yes, we should check
+						for failure */
+	    /* Fetch it */
+	    err = AEGetDescData(&resultData, returnChar, returnSize);
+	    if (isError) {
+	      sv_setpvn(ERRSV, returnChar, returnSize);
+	      err = 1;
+	    } else {
+	      returnSV = sv_2mortal(newSVpv(returnChar, returnSize));
+	    }
+	    AEDisposeDesc(&resultData);
+	  }
 	}
       } else {
 	sv_setiv(ERRSV, err);
@@ -74,5 +106,5 @@ PPCODE:
     if (err) {
       XSRETURN_EMPTY;
     }
-    XSRETURN_YES;
+    XPUSHs(returnSV);
 }
