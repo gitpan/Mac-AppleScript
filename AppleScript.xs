@@ -34,7 +34,13 @@ PPCODE:
     }
 
     /* put the script text into an aedesc */
-    err = AECreateDesc(typeChar, SvPV_nolen(text), sv_len(text), &scriptTextDesc);
+    /* we need to tell applescript this is text. Whether it's plain
+       char or UTF8 depends on flags in the string */
+    if (SvUTF8(text)) {
+        err = AECreateDesc( typeUTF8Text, SvPV_nolen(text), sv_len(text), &scriptTextDesc);
+    } else {
+      err = AECreateDesc(typeChar, SvPV_nolen(text), sv_len(text), &scriptTextDesc);
+    }
     if (err == noErr) {
 	
       /* compile the script */
@@ -67,10 +73,10 @@ PPCODE:
 	  AECreateDesc(typeNull, NULL, 0, &resultData);
 	  if (err == errOSAScriptError) {
             OSAScriptError(theComponent, kOSAErrorMessage,
-			   typeChar, &resultData);
+			   typeUTF8Text /*typeChar*/, &resultData);
 	    isError = 1;
 	  } else if (err == noErr && resultID != kOSANullScript) {
-            OSADisplay(theComponent, resultID, typeChar,
+            OSADisplay(theComponent, resultID, typeUTF8Text /*typeChar*/,
 		       kOSAModeNull, &resultData);
 	  }
 	  /* We got something in resultData. Now fish it out */
